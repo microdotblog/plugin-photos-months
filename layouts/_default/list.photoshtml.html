@@ -1,0 +1,28 @@
+{{ define "main" }}
+
+	{{- $photos := where .Site.Pages ".Params.photos" "!=" nil -}}
+	{{ $.Scratch.Set "currentMonth" "" }}
+	
+	{{ range $photos }}
+		{{ $monthYear := .Date.Format "January 2006" }}
+		
+		{{ if ne $monthYear ($.Scratch.Get "currentMonth") }}
+			{{ if ne ($.Scratch.Get "currentMonth") "" }}
+				</div>
+			{{ end }}
+			
+			<h2 style="padding-bottom: 20px;">{{ $monthYear }}</h2>
+			<div class="photos-grid-container" style="display: grid; grid-column-gap: 15px; grid-row-gap: 15px; grid-template-columns: repeat(3, 1fr);">
+			{{ $.Scratch.Set "currentMonth" $monthYear }}
+		{{ end }}
+		
+		<a href="{{ .Permalink }}" class="photos-grid-item" style="border-radius: 5px; overflow: hidden;">
+		{{ with index .Params.photos 0 }}
+			<img src="{{ . | relURL }}" loading="lazy" style="width:100%; height:auto; display:block;" alt="{{ $.Title }}">
+		{{ end }}
+		</a>
+	{{ end }}
+	
+	</div>
+
+{{ end }}
