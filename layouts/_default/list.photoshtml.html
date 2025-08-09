@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-	{{- $photos := where .Site.Pages ".Params.photos" "!=" nil -}}
+	{{- $photos := where .Site.Pages ".Params.photos_with_metadata" "!=" nil -}}
 	{{ $.Scratch.Set "currentMonth" "" }}
 	
 	{{ range $photos }}
@@ -17,9 +17,15 @@
 		{{ end }}
 		
 		<a href="{{ .Permalink }}" class="photos-grid-item" style="border-radius: 5px; overflow: hidden;">
-		{{ with index .Params.photos 0 }}
-			<img src="{{ . | relURL }}" loading="lazy" style="width:100%; height:auto; display:block;" alt="{{ $.Title }}">
-		{{ end }}
+			{{ with index .Params.photos_with_metadata 0 }}
+				{{ $src := .url }}
+				{{ with .sizes }}
+					{{ with .medium }}
+						{{ $src = . }}
+					{{ end }}
+				{{ end }}
+				<img src="{{ $src | relURL }}" loading="lazy" style="width:100%; height:auto; display:block;" alt="{{ $.Title }}">
+			{{ end }}
 		</a>
 	{{ end }}
 	
